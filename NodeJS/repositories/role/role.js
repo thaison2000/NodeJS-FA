@@ -1,14 +1,21 @@
-const path = require('node:path');
-const fs = require('node:fs/promises');
+const {RoleModel} = require('../../models')
 
-const dbPath = path.join(__dirname, '../../mockdb', 'roles.json');
-
-async function getRoleById(id) {
-  const jsonString = await fs.readFile(dbPath);
-  const roles = JSON.parse(jsonString);
-  return roles.find((role) => role.id === id) || null;
+async function createRole(role) {
+  const newrole = RoleModel.create({
+    roleId: role.roleId,
+    name: role.name,
+    permissions: role.permissions
+  })
+  return role
 }
 
-module.exports = {getRoleById};
+async function getRoleById(id) {
+  const role = RoleModel.findOne({
+    roleId: id
+  })
+  return role
+}
+
+module.exports = {createRole, getRoleById};
 
 

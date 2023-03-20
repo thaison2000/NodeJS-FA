@@ -1,13 +1,33 @@
-const path = require('node:path');
-const fs = require('node:fs/promises');
+const { UserModel } = require('../../models')
 
-const dbPath = path.join(__dirname, '../../mockdb', 'users.json');
-
-async function getUserWithUsername(username) {
-  const jsonString = await fs.readFile(dbPath);
-  const users = JSON.parse(jsonString);
-  return users.find((user) => user.username === username) || null;
+async function createUser(username, password, employeeNumber, roleId) {
+  try {
+    const newUser = UserModel.create({
+      username: username,
+      password: password,
+      employeeNumber: employeeNumber,
+      roleId: roleId
+    });
+    if (newUser) {
+      return newUser
+    }
+  } catch (error) {
+    return error
+  }
 }
 
-module.exports = {getUserWithUsername};
+async function getUserWithUserName(username) {
+  try {
+    const user = UserModel.findOne({
+      username: username,
+    });
+    if (user) {
+      return user
+    }
+  } catch (error) {
+    return error
+  }
+}
+
+module.exports = { createUser, getUserWithUserName };
 

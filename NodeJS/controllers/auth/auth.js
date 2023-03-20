@@ -1,27 +1,35 @@
 const jwt = require('jsonwebtoken');
-const {getUserWithUsername} = require('../../repositories');
-const {resFromData} = require('../../utilities');
+const { getUserWithUserName } = require('../../repositories');
+const { resFromData } = require('../../utilities');
+const { createUser } = require('../../repositories')
 
 // .env
-const {secret} = process.env;
-
-console.log(secret);
 
 async function loginController(req, res, next) {
-  const {username, password} = req.body || {};
-  const user = await getUserWithUsername(username);
+  const { username, password } = req.body || {};
+  const user = await getUserWithUserName(username);
   if (user) {
-    // let hashedPassword = hash(password, secret, salt??);
-    // hashedPassword === user.password
     if (password === user.password) {
+      const secret = process.env.secret;
       const token = jwt.sign({username}, secret);
-      res.json(resFromData(token));
+      return res.status(200).json(token)
     } else {
       next(new Error('Wrong username or password!'));
     }
+    return res.status(200).json(user)
   } else {
-    next(new Error('Wrong username or password!'));
+    return res.status(500).json('error')
   }
 }
 
-module.exports = {loginController};
+async function registerController(req, res, next) {
+  const { username, password, employeeNumber, roleId } = req.body || {};
+  const user = await createUser(username, password, employeeNumber, roleId);
+  if (user) {
+    return res.status(200).json(user)
+  } else {
+    return res.status(500).json('error')
+  }
+}
+
+module.exports = { loginController, registerController };

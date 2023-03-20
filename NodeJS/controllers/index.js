@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./auth/auth'),
-  ...require('./people/people'),
+  ...require('./employee/employee'),
+  ...require('./role/role'),
 };
