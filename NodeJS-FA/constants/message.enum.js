@@ -3,6 +3,7 @@ module.exports = {
         LOGIN_SUCCESS: "Đăng nhập thành công",
         LOGIN_FAIL: "Đăng nhập thất bại",
         MAIL_SENT: "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn",
+        NOT_PERMISSION: "Không có quyền truy cập",
         USER_NOT_FOUND: "Mã sinh viên không tồn tại",
         RESET_PASSWORD_SUCCESS: "Khôi phục mật khẩu thành công",
         RESET_PASSWORD_FAIL: "Mã không hợp lệ",

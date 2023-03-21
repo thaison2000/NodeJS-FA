@@ -4,7 +4,7 @@ const app = express();
 
 const { mongoEnum, msgEnum, codeEnum } = require('./constants')
 const {ErrorResponse} = require('./utilities');
-const { authRoute, roleRoute, employeeRoute } = require('./routes');
+const { authRoute, roleRoute, employeeRoute, customerRoute } = require('./routes');
 
 // Use this middleware, so that we can access request body via req.body
 app.use(express.json());
@@ -14,6 +14,7 @@ app.use(cookieParser());
 app.use('/auth', authRoute);
 app.use('/role', roleRoute);
 app.use('/employee', employeeRoute);
+app.use('/customer', customerRoute)
 
 // Handling all errors
 app.use((err, req, res, next) => {
