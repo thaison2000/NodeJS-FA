@@ -1,29 +1,31 @@
 const { createCustomer, updateCustomer, deleteCustomer, getAllCustomers } = require('../repositories');
 const { ErrorResponse } = require('../utilities')
-const { msgEnum, codeEnum } = require('../constants')
-// .env
 
 async function createCustomerController(req, res, next) {
-    const { customerNumber, customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber } = req.body || {};
     try {
         if (req.customers) {
-            if (req.customers.length == 0) {
-                const customer = await createCustomer({ customerNumber, customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber });
-                return res.status(codeEnum.SUCCESS).json({ message: msgEnum.ADD_SUCCESS, customer })
-            }
-            else {
-                if (req.customers.some((customer) => customer.customerNumber == customerNumber)) {
-                    const customer = await createCustomer({ customerNumber, customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber });
-                    return res.status(codeEnum.SUCCESS).json({ message: msgEnum.ADD_SUCCESS, customer })
+            if (req.user.role = 'Staff') {
+                if (req.user.employeeNumber = req.body.salesRepEmployeeNumber) {
+                    const customer = await createCustomer(req.body);
+                    return res.status(200).json({ customer })
                 }
                 else {
-                    return next(new ErrorResponse(msgEnum.NOT_PERMISSION, codeEnum.FORBIDDEN));
+                    return next(new Error('You are not authorized to perform this action!'));
+                }
+            }
+            else {
+                if (req.user.officeCode = req.body.officeCode) {
+                    const customer = await createCustomer(req.body);
+                    return res.status(200).json({ customer })
+                }
+                else {
+                    return next(new Error('You are not authorized to perform this action!'));
                 }
             }
         }
         else {
-            const customer = await createCustomer({ customerNumber, customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber });
-            return res.status(codeEnum.SUCCESS).json({ message: msgEnum.ADD_SUCCESS, customer })
+            const customer = await createCustomer(req.body);
+            return res.status(200).json({ customer })
         }
     } catch (error) {
         next(error)
@@ -32,26 +34,30 @@ async function createCustomerController(req, res, next) {
 
 async function updateCustomerController(req, res, next) {
     const customerNumber = req.params.customerNumber
-    const { customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber } = req.body || {};
     try {
         if (req.customers) {
-            if (req.customers.length == 0) {
-                const customer = await updateCustomer({ customerNumber, customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber });
-                return res.status(codeEnum.SUCCESS).json({ message: msgEnum.UPDATE_SUCCESS, customer })
-            }
-            else {
-                if (req.customers.some((customer) => customer.customerNumber == customerNumber)) {
-                    const customer = await updateCustomer({ customerNumber, customerName, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postalCode, country, creditLimit, salesRepEmployeeNumber });
-                    return res.status(codeEnum.SUCCESS).json({ message: msgEnum.UPDATE_SUCCESS, customer })
+            if (req.user.role = 'Staff') {
+                if (req.user.employeeNumber = req.body.salesRepEmployeeNumber) {
+                    const customer = await updateCustomer(customerNumber, req.body);
+                    return res.status(200).json({ customer })
                 }
                 else {
-                    return next(new ErrorResponse(msgEnum.NOT_PERMISSION, codeEnum.FORBIDDEN));
+                    return next(new Error('You are not authorized to perform this action!'));
+                }
+            }
+            else {
+                if (req.user.officeCode = req.body.officeCode) {
+                    const customer = await updateCustomer(customerNumber, req.body);
+                    return res.status(200).json({ customer })
+                }
+                else {
+                    return next(new Error('You are not authorized to perform this action!'));
                 }
             }
         }
         else {
-            const customer = await updateCustomer({ customerNumber, contactFirstName, contactLastName, phone, city, state, addressLine1, addressLine2, postCode, country, creditLimit, salesRepEmployeeNumber });
-            return res.status(codeEnum.SUCCESS).json({ message: msgEnum.UPDATE_SUCCESS, customer })
+            const customer = await updateCustomer(req.body);
+            return res.status(200).json({ customer })
         }
     } catch (error) {
         next(error)
@@ -64,15 +70,15 @@ async function deleteCustomerController(req, res, next) {
         if (req.customers.length > 0) {
             if (req.customers.some((customer) => customer.customerNumber == customerNumber)) {
                 const customer = await deleteCustomer(customerNumber);
-                return res.status(codeEnum.SUCCESS).json({ message: msgEnum.DELETE_SUCCESS, customer })
+                return res.status(200).json({ customer })
             }
             else {
-                return next(new ErrorResponse(msgEnum.NOT_PERMISSION, codeEnum.FORBIDDEN));
+                return next(new ErrorResponse('You are not authorized to perform this action!', 403));
             }
         }
         else {
             const customer = await deleteCustomer(customerNumber);
-            return res.status(codeEnum.SUCCESS).json({ message: msgEnum.DELETE_SUCCESS, customer })
+            return res.status(200).json({ customer })
         }
     } catch (error) {
         next(error)
@@ -82,11 +88,11 @@ async function deleteCustomerController(req, res, next) {
 async function getAllCustomersController(req, res, next) {
     try {
         if (req.customers) {
-            res.status(codeEnum.SUCCESS).json({ message: msgEnum.READ_SUCCESS, customers: req.customers })
+            res.status(200).json({ customers: req.customers })
         }
         else {
             const customers = await getAllCustomers();
-            res.status(codeEnum.SUCCESS).json({ message: msgEnum.READ_SUCCESS, customers })
+            res.status(200).json({ customers })
         }
     } catch (error) {
         next(error)

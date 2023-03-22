@@ -2,15 +2,7 @@ const { EmployeeModel } = require('../models')
 
 async function createEmployee(employee) {
     try {
-        const newEmployee = EmployeeModel.create({
-            employeeNumber: employee.employeeNumber,
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            extension: employee.extension,
-            email: employee.email,
-            officeCode: employee.officeCode,
-            jobTitle: employee.jobTitle
-        })
+        const newEmployee = EmployeeModel.create(employee)
         return newEmployee
     }
     catch (error) {
@@ -29,12 +21,12 @@ async function getAllEmployees() {
 
 async function updateEmployee(employeeNumber, employee) {
     try {
-        const updateEmployee = await EmployeeModel.updateOne({
+        const updateEmployee = await EmployeeModel.findOneAndUpdate({
             employeeNumber: employeeNumber
         },
-            {
-                employee
-            });
+
+            employee
+            , { new: true });
         return updateEmployee
     } catch (error) {
         return error

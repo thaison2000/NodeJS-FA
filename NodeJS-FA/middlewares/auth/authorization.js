@@ -25,6 +25,7 @@ function permissionRequired(permission) {
               salesRepEmployeeNumber: req.user.employeeNumber
             })
             req.customers = customers
+            req.user.role = 'Customer'
           }
           if(userRole.name == 'Leader'){
             let employees = await EmployeeModel.find({
@@ -38,9 +39,7 @@ function permissionRequired(permission) {
               customers.push(data)
             }
             req.customers = customers
-          }
-          else{
-            req.customers = await CustomerModel.find()
+            req.user.role = 'Leader'
           }
           return next()
         }
